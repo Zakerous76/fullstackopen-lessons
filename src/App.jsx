@@ -3,7 +3,8 @@ import Part1_D from "./components/Part1_D";
 import Part2_A from "./components/Part2_A";
 import Part2_B from "./components/Part2_B";
 import Part2_C from "./components/Part2_C";
-import Part2_D from "./components/Part2_D";
+// import Part2_D from "./components/Part2_D";
+import Part2_E from "./components/Part2_E";
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
       {/* <Part2_A /> */}
       {/* <Part2_B /> */}
       {/* <Part2_C /> */}
-      <Part2_D />
+      {/* <Part2_D /> */}
+      <Part2_E />
     </>
   );
 }
