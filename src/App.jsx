@@ -10,7 +10,6 @@ function App() {
   return (
     <>
       <title>FullStackOpen Lessons</title>
-      <h1>Hello World</h1>
       {/* <Part1_C name="Zaker" age="29"></Part1_C> */}
       {/* <Part1_D /> */}
       {/* <Part2_A /> */}

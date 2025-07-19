@@ -1,20 +1,21 @@
 import { useState, useEffect } from "react";
 import Note from "./Note";
 import noteService from "../services/notes";
+import Notification from "./Notification";
+import Footer from "./Footer";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
   useEffect(() => {
-    const respose = noteService
-      .getAll()
-      .then((initialNotes) => setNotes(initialNotes));
-    console.log(respose);
+    noteService.getAll().then((initialNotes) => setNotes(initialNotes));
   }, []);
 
   const [newNote, setNewNote] = useState("a new note ...");
   const [showAllToggle, setshowAllToggle] = useState(false);
   const [showAllToggleText, setshowAllToggleText] = useState("Show All");
   const [importanceToggle, setImportanceToggle] = useState(false);
+
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const handleMakeImportant = (noteId) => () => {
     const targetNote = notes.find((note) => note.id === noteId);
@@ -28,9 +29,12 @@ const App = () => {
         );
       })
       .catch((err) => {
-        alert(
+        setErrorMsg(
           `Fail: The note "${updatedNote.content}" is not found in the database. \n${err}`
         );
+        setTimeout(() => {
+          setErrorMsg(null);
+        }, 5000);
         setNotes(
           notes.filter((note) => {
             return note.id !== noteId;
@@ -80,6 +84,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMsg} />
       <ul>
         {notes.map((note) => {
           return (
@@ -105,6 +110,7 @@ const App = () => {
       </button>{" "}
       <br />
       <button onClick={handleShowAllToggle}>{showAllToggleText}</button>
+      <Footer />
     </div>
   );
 };
