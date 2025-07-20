@@ -43,6 +43,14 @@ app.get("/api/notes/:id", (req, res) => {
   }
 });
 
+// Delete a note
+app.delete("/api/notes/:id", (req, res) => {
+  const id = req.params.id;
+  notes = notes.filter((note) => note.id !== id);
+
+  res.status(204).send("Note deleted").end();
+});
+
 // Server Live
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
