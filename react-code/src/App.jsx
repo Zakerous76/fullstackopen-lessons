@@ -5,6 +5,7 @@ import Part2_B from "./components/Part2_B";
 import Part2_C from "./components/Part2_C";
 // import Part2_D from "./components/Part2_D";
 import Part2_E from "./components/Part2_E";
+import Part3_B from "./components/Part3_B";
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
       {/* <Part2_B /> */}
       {/* <Part2_C /> */}
       {/* <Part2_D /> */}
-      <Part2_E />
+      {/* <Part2_E /> */}
+      <Part3_B />
     </>
   );
 }
