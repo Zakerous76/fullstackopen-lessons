@@ -22,7 +22,7 @@ let notes = [
 const app = express();
 app.use(express.json());
 
-const requestLogger = (req, res, next) => {
+const requestLogger = (request, response, next) => {
   console.log("Method:", request.method);
   console.log("Path:  ", request.path);
   console.log("Body:  ", request.body);
