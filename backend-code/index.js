@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 let notes = [
   {
     id: "1",
@@ -21,9 +21,13 @@ let notes = [
   },
 ];
 
-// Middlewares
+// ### MIDDLEWARES
+
 app.use(cors());
+// Parsing json files coming from requests
 app.use(express.json());
+// Serving static Files
+app.use(express.static("dist"));
 
 const requestLogger = (request, response, next) => {
   console.log("Method:", request.method);
@@ -34,13 +38,15 @@ const requestLogger = (request, response, next) => {
 };
 app.use(requestLogger);
 
+// ### HELPER FUNCTIONS
+
 const generateID = () => {
   const maxId =
     notes.length > 0 ? Math.max(...notes.map((n) => Number(n.id))) : 0;
   return String(maxId + 1);
 };
 
-// #ROUTES
+// ### ROUTES
 
 // Root
 app.get("/", (request, response) => {
