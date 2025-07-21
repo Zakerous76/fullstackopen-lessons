@@ -20,8 +20,16 @@ let notes = [
 ];
 
 const app = express();
-
 app.use(express.json());
+
+const requestLogger = (req, res, next) => {
+  console.log("Method:", request.method);
+  console.log("Path:  ", request.path);
+  console.log("Body:  ", request.body);
+  console.log("---");
+  next();
+};
+app.use(requestLogger);
 
 const generateID = () => {
   const maxId =
@@ -79,6 +87,12 @@ app.post("/api/notes", (req, res) => {
     res.json(note);
   }
 });
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
 
 // Server Live
 app.listen(PORT, () => {
