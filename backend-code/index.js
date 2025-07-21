@@ -1,5 +1,4 @@
 const express = require("express");
-const http = require("http");
 const PORT = 3001;
 
 let notes = [
@@ -22,17 +21,27 @@ let notes = [
 
 const app = express();
 
+app.use(express.json());
+
+const generateID = () => {
+  const maxId =
+    notes.length > 0 ? Math.max(...notes.map((n) => Number(n.id))) : 0;
+  return String(maxId + 1);
+};
+
+// #ROUTES
+
 // Root
 app.get("/", (request, response) => {
   response.send("<h1>Hello World!</h1>");
 });
 
-// All notes
+// GET All notes
 app.get("/api/notes", (req, res) => {
   res.json(notes);
 });
 
-// A single note
+// GET A single note
 app.get("/api/notes/:id", (req, res) => {
   const id = req.params.id;
   const note = notes.find((note) => note.id === id);
@@ -43,12 +52,32 @@ app.get("/api/notes/:id", (req, res) => {
   }
 });
 
-// Delete a note
+// DELETE a note
 app.delete("/api/notes/:id", (req, res) => {
   const id = req.params.id;
   notes = notes.filter((note) => note.id !== id);
-
+  console.log(notes);
   res.status(204).send("Note deleted").end();
+});
+
+// CREATE a note
+app.post("/api/notes", (req, res) => {
+  const body = req.body;
+
+  if (!body.content) {
+    res.status(400).json({
+      error: "content missing",
+    });
+  } else {
+    const note = {
+      content: body.content,
+      important: body.important || false,
+      id: generateID(),
+    };
+    notes = notes.concat(note);
+    console.log(notes);
+    res.json(note);
+  }
 });
 
 // Server Live
