@@ -7,7 +7,9 @@ import Footer from "./Footer";
 const App = () => {
   const [notes, setNotes] = useState([]);
   useEffect(() => {
-    noteService.getAll().then((initialNotes) => setNotes(initialNotes));
+    noteService.getAll().then((initialNotes) => {
+      setNotes(initialNotes);
+    });
   }, []);
 
   const [newNote, setNewNote] = useState("a new note ...");

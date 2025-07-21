@@ -23,7 +23,7 @@ let notes = [
 
 // ### MIDDLEWARES
 
-app.use(cors());
+// app.use(cors());
 // Parsing json files coming from requests
 app.use(express.json());
 // Serving static Files
