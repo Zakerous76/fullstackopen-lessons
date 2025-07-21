@@ -1,6 +1,8 @@
 const express = require("express");
-const PORT = 3001;
+const cors = require("cors");
 
+const app = express();
+const PORT = 3001;
 let notes = [
   {
     id: "1",
@@ -19,7 +21,8 @@ let notes = [
   },
 ];
 
-const app = express();
+// Middlewares
+app.use(cors());
 app.use(express.json());
 
 const requestLogger = (request, response, next) => {
