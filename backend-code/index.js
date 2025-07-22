@@ -1,30 +1,10 @@
+require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
+const mongoose = require("mongoose");
+const Note = require("./models/note");
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-let notes = [
-  {
-    id: "1",
-    content: "HTML is easy",
-    important: true,
-  },
-  {
-    id: "2",
-    content: "Browser can execute only JavaScript",
-    important: false,
-  },
-  {
-    id: "3",
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true,
-  },
-];
-
-// ### MIDDLEWARES
-
-// app.use(cors());
-// Parsing json files coming from requests
+const PORT = process.env.PORT;
 app.use(express.json());
 // Serving static Files
 app.use(express.static("dist"));
@@ -54,8 +34,10 @@ app.get("/", (request, response) => {
 });
 
 // GET All notes
-app.get("/api/notes", (req, res) => {
-  res.json(notes);
+app.get("/api/notes", (request, response) => {
+  Note.find({}).then((notes) => {
+    response.json(notes);
+  });
 });
 
 // GET A single note
