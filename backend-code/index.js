@@ -41,16 +41,17 @@ app.get("/api/notes", (request, response) => {
 });
 
 // GET A single note
-app.get("/api/notes/:id", (req, res) => {
+app.get("/api/notes/:id", (req, res, next) => {
   const reqId = req.params.id;
 
-  if (!mongoose.Types.ObjectId.isValid(reqId)) {
-    return res.status(400).json({ error: "Invalid note ID" });
-  }
+  // if (!mongoose.Types.ObjectId.isValid(reqId)) {
+  //   return res.status(400).json({ error: "Invalid note ID" });
+  // }
 
   Note.findById(reqId)
     .then((note) => {
       console.log(note);
+      // If no matching object is found in the database, the value of note will be null
       if (note) {
         res.json(note);
       } else {
@@ -58,16 +59,18 @@ app.get("/api/notes/:id", (req, res) => {
       }
     })
     .catch((error) => {
-      res.status(500).json({ error: "Server error", details: error.message });
+      next(error);
+
+      // res.status(500).json({ error: "Server error", details: error.message });
     });
 });
 
 // DELETE a note
 app.delete("/api/notes/:id", (req, res) => {
   const id = req.params.id;
-  notes = notes.filter((note) => note.id !== id);
-  console.log(notes);
-  res.status(204).send("Note deleted").end();
+  Note.findByIdAndDelete(id).then((result) => {
+    res.status(204).end();
+  });
 });
 
 // CREATE a note
@@ -90,11 +93,39 @@ app.post("/api/notes", (req, res) => {
   }
 });
 
+app.put("/api/notes/:id", (request, response, next) => {
+  const { content, important } = request.body;
+  Note.findById(request.params.id)
+    .then((note) => {
+      if (!note) {
+        return response.status(404).end();
+      }
+      note.content = content;
+      note.important = important;
+
+      return note.save().then((updatedNote) => {
+        response.json(updatedNote);
+      });
+    })
+    .catch((error) => next(error));
+});
+
+// Catch the rest of the endpoints
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: "unknown endpoint" });
 };
-
 app.use(unknownEndpoint);
+
+// Error Handler
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
 
 // Server Live
 app.listen(PORT, () => {
