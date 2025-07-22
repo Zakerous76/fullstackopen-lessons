@@ -74,7 +74,7 @@ app.delete("/api/notes/:id", (req, res) => {
 });
 
 // CREATE a note
-app.post("/api/notes", (req, res) => {
+app.post("/api/notes", (req, res, next) => {
   const body = req.body;
 
   if (!body.content) {
@@ -86,10 +86,13 @@ app.post("/api/notes", (req, res) => {
       content: body.content,
       important: body.important || false,
     });
-    note.save().then((savedNote) => {
-      console.log("savedNote:", savedNote);
-      res.status(201).json(savedNote);
-    });
+    note
+      .save()
+      .then((savedNote) => {
+        console.log("savedNote:", savedNote);
+        res.status(201).json(savedNote);
+      })
+      .catch((error) => next(error));
   }
 });
 
@@ -107,7 +110,10 @@ app.put("/api/notes/:id", (request, response, next) => {
         response.json(updatedNote);
       });
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      console.log(error);
+      next(error);
+    });
 });
 
 // Catch the rest of the endpoints
@@ -122,10 +128,14 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({
+      error: error.message,
+    });
   }
-
   next(error);
 };
+app.use(errorHandler);
 
 // Server Live
 app.listen(PORT, () => {
