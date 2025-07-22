@@ -42,13 +42,24 @@ app.get("/api/notes", (request, response) => {
 
 // GET A single note
 app.get("/api/notes/:id", (req, res) => {
-  const id = req.params.id;
-  const note = notes.find((note) => note.id === id);
-  if (note) {
-    res.json(note);
-  } else {
-    res.status(404).end("Requested note not found");
+  const reqId = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(reqId)) {
+    return res.status(400).json({ error: "Invalid note ID" });
   }
+
+  Note.findById(reqId)
+    .then((note) => {
+      console.log(note);
+      if (note) {
+        res.json(note);
+      } else {
+        res.status(404).end("Requested note not found");
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Server error", details: error.message });
+    });
 });
 
 // DELETE a note
@@ -68,14 +79,14 @@ app.post("/api/notes", (req, res) => {
       error: "content missing",
     });
   } else {
-    const note = {
+    const note = new Note({
       content: body.content,
       important: body.important || false,
-      id: generateID(),
-    };
-    notes = notes.concat(note);
-    console.log(notes);
-    res.json(note);
+    });
+    note.save().then((savedNote) => {
+      console.log("savedNote:", savedNote);
+      res.status(201).json(savedNote);
+    });
   }
 });
 
