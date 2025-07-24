@@ -1,7 +1,8 @@
+const note = require("../models/note");
 const Note = require("../models/note");
 const User = require("../models/user");
 
-const initialNotes = [
+const initialNotesRaw = [
   {
     content: "HTML is easy",
     important: false,
@@ -11,6 +12,10 @@ const initialNotes = [
     important: true,
   },
 ];
+
+const prepInitialNotes = (userId) => {
+  return initialNotesRaw.map((note) => ({ ...note, user: userId }));
+};
 
 const nonExistingId = async () => {
   const note = new Note({ content: "willremovethissoon" });
@@ -30,9 +35,21 @@ const usersInDB = async () => {
   return users.map((u) => u.toJSON());
 };
 
+const extractUserId = async () => {
+  const user = new User({
+    username: "testUser",
+    name: "jeff",
+    password: "my name is jeff",
+  });
+
+  const newUser = await user.save();
+  return newUser.id.toString();
+};
+
 module.exports = {
-  initialNotes,
+  prepInitialNotes,
   nonExistingId,
   notesInDb,
   usersInDB,
+  extractUserId,
 };

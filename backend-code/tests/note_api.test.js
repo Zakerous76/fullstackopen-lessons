@@ -10,43 +10,52 @@ const bcrypt = require("bcrypt");
 
 const api = supertest(app);
 
-describe("when there is initially some notes saved", () => {
+// Notes test
+describe("Notes test: when there is initially some notes saved", async () => {
+  await User.deleteMany({});
+  const userId = await helper.extractUserId();
+  const initialNotes = helper.prepInitialNotes(userId);
   beforeEach(async () => {
     await Note.deleteMany({});
-    await Note.insertMany(helper.initialNotes);
+    await Note.insertMany(initialNotes);
   });
+  describe("viewing all notes", () => {
+    test("notes are returned as json", async () => {
+      await api
+        .get("/api/notes")
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+    });
 
-  test("notes are returned as json", async () => {
-    await api
-      .get("/api/notes")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-  });
+    test("all notes are returned", async () => {
+      const response = await api.get("/api/notes");
 
-  test("all notes are returned", async () => {
-    const response = await api.get("/api/notes");
-
-    assert.strictEqual(response.body.length, helper.initialNotes.length);
-  });
-
-  test("a specific note is within the returned notes", async () => {
-    const response = await api.get("/api/notes");
-
-    const contents = response.body.map((e) => e.content);
-    assert(contents.includes("HTML is easy"));
+      assert.strictEqual(response.body.length, initialNotes.length);
+    });
   });
 
   describe("viewing a specific note", () => {
+    test("a specific note is within the returned notes", async () => {
+      const response = await api.get("/api/notes");
+
+      const contents = response.body.map((e) => e.content);
+      assert(contents.includes("HTML is easy"));
+    });
     test("succeeds with a valid id", async () => {
       const notesAtStart = await helper.notesInDb();
       const noteToView = notesAtStart[0];
+
+      const expectedNote = {
+        ...noteToView,
+        user: noteToView.user.toString(),
+      };
 
       const resultNote = await api
         .get(`/api/notes/${noteToView.id}`)
         .expect(200)
         .expect("Content-Type", /application\/json/);
 
-      assert.deepStrictEqual(resultNote.body, noteToView);
+      assert.deepStrictEqual(resultNote.body, expectedNote);
     });
 
     test("fails with statuscode 404 if note does not exist", async () => {
@@ -67,6 +76,7 @@ describe("when there is initially some notes saved", () => {
       const newNote = {
         content: "async/await simplifies making async calls",
         important: true,
+        user: userId,
       };
 
       await api
@@ -76,7 +86,7 @@ describe("when there is initially some notes saved", () => {
         .expect("Content-Type", /application\/json/);
 
       const notesAtEnd = await helper.notesInDb();
-      assert.strictEqual(notesAtEnd.length, helper.initialNotes.length + 1);
+      assert.strictEqual(notesAtEnd.length, initialNotes.length + 1);
 
       const contents = notesAtEnd.map((n) => n.content);
       assert(contents.includes("async/await simplifies making async calls"));
@@ -89,7 +99,7 @@ describe("when there is initially some notes saved", () => {
 
       const notesAtEnd = await helper.notesInDb();
 
-      assert.strictEqual(notesAtEnd.length, helper.initialNotes.length);
+      assert.strictEqual(notesAtEnd.length, initialNotes.length);
     });
   });
 
@@ -105,12 +115,14 @@ describe("when there is initially some notes saved", () => {
       const contents = notesAtEnd.map((n) => n.content);
       assert(!contents.includes(noteToDelete.content));
 
-      assert.strictEqual(notesAtEnd.length, helper.initialNotes.length - 1);
+      assert.strictEqual(notesAtEnd.length, initialNotes.length - 1);
     });
   });
 });
 
-describe("when there is initially one user in db", () => {
+// pass
+// Users Test
+describe("Users Test: when there is initially one user in db", () => {
   beforeEach(async () => {
     await User.deleteMany({});
     const passwordHash = await bcrypt.hash("sekret", 10);
@@ -121,7 +133,7 @@ describe("when there is initially one user in db", () => {
     });
     await user.save();
   });
-
+  // pass
   test("creation succeeds with a fresh username", async () => {
     const usersBefore = await helper.usersInDB();
     const newUser = {
@@ -137,6 +149,7 @@ describe("when there is initially one user in db", () => {
     assert.strictEqual(newUser.username, result.username);
   });
 
+  // Pass
   test("creation fails with proper statuscode and message if username already taken", async () => {
     const password = "hiddenpassword";
     const usersBefore = await helper.usersInDB();

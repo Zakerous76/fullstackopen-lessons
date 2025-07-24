@@ -22,9 +22,14 @@ usersRouter.post("/", async (request, response) => {
     const savedUser = await user.save();
     response.status(201).json(savedUser);
   } catch (error) {
-    console.log(error);
     response.status(400).json(error);
   }
+});
+
+usersRouter.delete("/:id", async (request, response) => {
+  const userId = request.params.id;
+  await User.findByIdAndDelete(userId);
+  response.status(204).end();
 });
 
 module.exports = usersRouter;
