@@ -1,7 +1,9 @@
 POST http://localhost:3001/api/notes/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InR1Z2JhT2d1eiIsImlkIjoiNjg4MjQ5YzkyZWM5MjRlMTM2YjU2ZjcxIiwiaWF0IjoxNzUzMzY5MDU3fQ.Hj1A8KWQNZfH4FgLmVdZ0lgXdp4LQeQQQbYcuE5Wnj0
 
 {
-    "name": "sample",
-    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+    "content": "'Neemz 30min with perfect transition' is the jam",
+    "important": true,
+    "userId": "688249c92ec924e136b56f71"
 }

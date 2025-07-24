@@ -5,18 +5,18 @@ const middleware = require("./utils/middleware");
 const notesRouter = require("./controllers/notes");
 const usersRouter = require("./controllers/users");
 const mongoose = require("mongoose");
+const loginRouter = require("./controllers/login");
 
 const app = express();
 
 logger.info("Connecting to DB...");
-mongoose
-  .connect(config.MONGODB_URI)
-  .then(() => {
-    logger.info("Connected to MongoDB");
-  })
-  .catch((error) => {
+async () => {
+  try {
+    await mongoose.connect(config.MONGODB_URI);
+  } catch (error) {
     logger.info("Error connecting to MongoDB: ", error.message);
-  });
+  }
+};
 
 app.use(express.json());
 // Serving static Files
@@ -24,6 +24,7 @@ app.use(express.static("dist"));
 app.use(middleware.requestLogger);
 
 // ### ROUTES
+app.use("/api/login", loginRouter);
 app.use("/api/notes", notesRouter);
 app.use("/api/users", usersRouter);
 
