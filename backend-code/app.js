@@ -3,6 +3,7 @@ const config = require("./utils/config");
 const logger = require("./utils/logger");
 const middleware = require("./utils/middleware");
 const notesRouter = require("./controllers/notes");
+const mongoose = require("mongoose");
 
 const app = express();
 
@@ -10,10 +11,10 @@ logger.info("Connecting to DB...");
 mongoose
   .connect(config.MONGODB_URI)
   .then(() => {
-    logger.log("Connected to MongoDB");
+    logger.info("Connected to MongoDB");
   })
   .catch((error) => {
-    logger.log("Error connecting to MongoDB: ", error.message);
+    logger.info("Error connecting to MongoDB: ", error.message);
   });
 
 app.use(express.json());
