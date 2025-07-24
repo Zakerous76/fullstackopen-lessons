@@ -1,6 +1,5 @@
 const notesRouter = require("express").Router();
 const NoteModel = require("../models/note");
-const { error } = require("../utils/logger");
 
 notesRouter.get("/", async (request, response) => {
   const notes = await NoteModel.find({});
