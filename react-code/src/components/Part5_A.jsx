@@ -3,23 +3,26 @@ import Note from "./Note";
 import noteService from "../services/notes";
 import Notification from "./Notification";
 import Footer from "./Footer";
-import loginService from "../services/login";
+import LoginForm from "./LoginForm";
+import NotesForm from "./NotesForm";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
-  const [newNote, setNewNote] = useState("a new note ...");
   const [showAllToggle, setshowAllToggle] = useState(false);
   const [showAllToggleText, setshowAllToggleText] = useState("Show All");
-  const [importanceToggle, setImportanceToggle] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState(null);
   const [user, setUser] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     noteService.getAll().then((initialNotes) => {
       setNotes(initialNotes);
     });
+    const localUser = JSON.parse(
+      window.localStorage.getItem("loggedNoteAppUser")
+    );
+    if (localUser) {
+      setUser(localUser);
+    }
   }, []);
 
   const handleMakeImportant = (noteId) => () => {
@@ -48,34 +51,6 @@ const App = () => {
       });
   };
 
-  const handleImportanceToggle = () => {
-    setImportanceToggle((prev) => !prev);
-  };
-
-  const addNote = (event) => {
-    event.preventDefault();
-    const noteObject = {
-      content: newNote,
-      important: importanceToggle,
-    };
-
-    noteService.create(noteObject).then((res) => {
-      noteService.getAll().then((updatedNotes) => setNotes(updatedNotes)); // if something is deleted on the backend, it should be reflected
-      setNewNote("a new note ...");
-      setImportanceToggle(false);
-    });
-  };
-
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value);
-  };
-
-  const handleNoteReset = (event) => {
-    if (newNote === "a new note ...") {
-      setNewNote("");
-    }
-  };
-
   const handleShowAllToggle = () => {
     const newState = !showAllToggle;
     setshowAllToggle(newState);
@@ -86,79 +61,28 @@ const App = () => {
     }
   };
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    console.log("logging in with: ", username, password);
-
-    try {
-      const user = await loginService(username, password);
-      setUser(user);
-      setUsername("");
-      setPassword("");
-    } catch (error) {
-      setErrorMsg("Wrong Credentials");
-      setTimeout(() => {
-        setErrorMsg(null);
-      }, 5000);
-    }
-  };
-
-  const loginForm = () => {
-    return (
-      <div className="login-section">
-        <form action="post" onSubmit={handleLogin}>
-          <div>
-            <label htmlFor="username">Username </label>
-            <input
-              type="text"
-              name="Username"
-              id="username"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="password">Password </label>
-            <input
-              type="text"
-              name="Password"
-              id="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type="submit">Login</button>
-        </form>
-      </div>
-    );
-  };
-
-  const noteForm = () => {
-    return (
-      <div className="note-form">
-        <form onSubmit={addNote}>
-          <input
-            type="text"
-            value={newNote}
-            onChange={handleNoteChange}
-            onClick={handleNoteReset}
-          />{" "}
-          <button type="submit">save</button>
-        </form>
-      </div>
-    );
+  const handleLogout = () => {
+    setUser(null);
+    window.localStorage.removeItem("loggedNoteAppUser");
   };
 
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMsg} />
+
       {user === null ? (
-        loginForm()
+        <LoginForm setErrorMsg={setErrorMsg} setUser={setUser} />
       ) : (
         <div>
-          <p>{user.name} logged-in</p>
-          {noteForm()}
+          <h2>Welcome!</h2>
+          <p>
+            <b>{user.name}</b> logged-in
+          </p>
+          <p>
+            <button onClick={handleLogout}>Logout</button>
+          </p>
+          {<NotesForm setNotes={setNotes} />}
         </div>
       )}
       <div className="notes-section">
@@ -174,15 +98,7 @@ const App = () => {
           })}
         </ul>
       </div>
-
-      <div className="function-buttons">
-        <button onClick={handleImportanceToggle}>
-          Important ({importanceToggle ? "Yes" : "No"})
-        </button>{" "}
-        <br />
-        <button onClick={handleShowAllToggle}>{showAllToggleText}</button>
-      </div>
-
+      <button onClick={handleShowAllToggle}>{showAllToggleText}</button>
       <Footer />
     </div>
   );
