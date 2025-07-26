@@ -1,22 +1,15 @@
 const express = require("express");
-const config = require("./utils/config");
 const logger = require("./utils/logger");
 const middleware = require("./utils/middleware");
 const notesRouter = require("./controllers/notes");
 const usersRouter = require("./controllers/users");
-const mongoose = require("mongoose");
+const connectToDB = require("./utils/mongoTools").connectToDB;
 const loginRouter = require("./controllers/login");
 
 const app = express();
 
 logger.info("Connecting to DB...");
-async () => {
-  try {
-    await mongoose.connect(config.MONGODB_URI);
-  } catch (error) {
-    logger.info("Error connecting to MongoDB: ", error.message);
-  }
-};
+connectToDB();
 
 app.use(express.json());
 // Serving static Files
