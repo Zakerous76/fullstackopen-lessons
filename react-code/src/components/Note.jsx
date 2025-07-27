@@ -5,7 +5,7 @@ const Note = ({ note, handleImportanceToggle }) => {
   return (
     <li className="note">
       {`${note.content} | ${note.important} `}
-      <button onClick={handleImportanceToggle(note.id)}> {label}</button>
+      <button onClick={() => handleImportanceToggle(note.id)}> {label}</button>
     </li>
   );
 };

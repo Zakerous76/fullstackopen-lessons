@@ -6,6 +6,7 @@ import Footer from "./Footer";
 import LoginForm from "./LoginForm";
 import NotesForm from "./NotesForm";
 import Togglable from "./Togglable";
+import loginService from "../services/login";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -27,13 +28,19 @@ const App = () => {
     );
     if (localUser) {
       setUser(localUser);
-      // setShowLogin(false);
+      noteService.setToken(localUser.token);
     } else {
-      // setShowLogin(true);
     }
   }, []);
 
-  const handleMakeImportant = (noteId) => () => {
+  const createNote = async (noteObject) => {
+    await noteService.create(noteObject);
+    noteFormRef.current.toggleVisibility();
+    const updatedNotes = await noteService.getAll(); // if something is deleted on the backend, it should be reflected
+    setNotes(updatedNotes);
+  };
+
+  const handleMakeImportant = (noteId) => {
     const targetNote = notes.find((note) => note.id === noteId);
     const updatedNote = { ...targetNote, important: !targetNote.important };
 
@@ -80,7 +87,7 @@ const App = () => {
       <Notification message={errorMsg} />
 
       {user === null ? (
-        <Togglable buttonLabel="login" ref={noteFormRef}>
+        <Togglable buttonLabel="login">
           <LoginForm setErrorMsg={setErrorMsg} setUser={setUser} />
         </Togglable>
       ) : (
@@ -93,8 +100,8 @@ const App = () => {
             <button onClick={handleLogout}>Logout</button>
           </p>
           {
-            <Togglable buttonLabel="Create Note">
-              <NotesForm setNotes={setNotes} noteFormRef={noteFormRef} />
+            <Togglable buttonLabel="Create Note" ref={noteFormRef}>
+              <NotesForm createNote={createNote} noteFormRef={noteFormRef} />
             </Togglable>
           }
         </div>
