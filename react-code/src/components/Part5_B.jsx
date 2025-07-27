@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Note from "./Note";
 import noteService from "../services/notes";
 import Notification from "./Notification";
 import Footer from "./Footer";
 import LoginForm from "./LoginForm";
 import NotesForm from "./NotesForm";
+import Togglable from "./Togglable";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -12,16 +13,23 @@ const App = () => {
   const [showAllToggleText, setshowAllToggleText] = useState("Show All");
   const [user, setUser] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  // const [showLogin, setShowLogin] = useState(false);
+
+  const noteFormRef = useRef();
 
   useEffect(() => {
     noteService.getAll().then((initialNotes) => {
       setNotes(initialNotes);
     });
+
     const localUser = JSON.parse(
       window.localStorage.getItem("loggedNoteAppUser")
     );
     if (localUser) {
       setUser(localUser);
+      // setShowLogin(false);
+    } else {
+      // setShowLogin(true);
     }
   }, []);
 
@@ -72,7 +80,9 @@ const App = () => {
       <Notification message={errorMsg} />
 
       {user === null ? (
-        <LoginForm setErrorMsg={setErrorMsg} setUser={setUser} />
+        <Togglable buttonLabel="login" ref={noteFormRef}>
+          <LoginForm setErrorMsg={setErrorMsg} setUser={setUser} />
+        </Togglable>
       ) : (
         <div>
           <h2>Welcome!</h2>
@@ -82,7 +92,11 @@ const App = () => {
           <p>
             <button onClick={handleLogout}>Logout</button>
           </p>
-          {<NotesForm setNotes={setNotes} />}
+          {
+            <Togglable buttonLabel="Create Note">
+              <NotesForm setNotes={setNotes} noteFormRef={noteFormRef} />
+            </Togglable>
+          }
         </div>
       )}
       <div className="notes-section">

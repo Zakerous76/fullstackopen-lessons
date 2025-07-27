@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import loginService from "../services/login";
 import notesService from "../services/notes";
+import PropTypes from "prop-types";
 
 const LoginForm = ({ setErrorMsg, setUser }) => {
   const [username, setUsername] = useState("");

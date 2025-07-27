@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import noteService from "../services/notes";
 
-const NotesForm = ({ setNotes }) => {
+const NotesForm = ({ setNotes, noteFormRef }) => {
   const [newNote, setNewNote] = useState("a new note ...");
   const [importanceToggle, setImportanceToggle] = useState(false);
   const handleNoteChange = (event) => {
@@ -24,6 +24,8 @@ const NotesForm = ({ setNotes }) => {
     };
 
     noteService.create(noteObject).then(() => {
+      noteFormRef.current.toggleVisibility();
+
       noteService.getAll().then((updatedNotes) => setNotes(updatedNotes)); // if something is deleted on the backend, it should be reflected
       setNewNote("a new note ...");
       setImportanceToggle(false);
