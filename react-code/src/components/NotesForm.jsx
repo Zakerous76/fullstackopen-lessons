@@ -34,6 +34,7 @@ const NotesForm = ({ createNote, noteFormRef }) => {
       <form onSubmit={addNote}>
         <input
           type="text"
+          placeholder="write note content here..."
           value={newNote}
           onChange={handleNoteChange}
           onClick={handleNoteReset}
