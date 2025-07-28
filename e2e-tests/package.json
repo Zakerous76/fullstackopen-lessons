@@ -1,0 +1,26 @@
+{
+  "name": "fullstackopen-lessons",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test --project chromium",
+    "test:report": "playwright show-report "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zakerous76/fullstackopen-lessons.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Zakerous76/fullstackopen-lessons/issues"
+  },
+  "homepage": "https://github.com/Zakerous76/fullstackopen-lessons#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.54.1",
+    "@types/node": "^24.1.0"
+  }
+}
