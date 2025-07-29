@@ -79,6 +79,7 @@ notesRouter.put("/:id", async (request, response, next) => {
       response.status(404).end("note not found");
     }
   } catch (error) {
+    console.log("error at: /notes.js PUT method");
     next(error);
   }
 });

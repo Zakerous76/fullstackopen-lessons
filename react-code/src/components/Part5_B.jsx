@@ -40,30 +40,35 @@ const App = () => {
     setNotes(updatedNotes);
   };
 
-  const handleMakeImportant = (noteId) => {
+  const handleMakeImportant = async (noteId) => {
     const targetNote = notes.find((note) => note.id === noteId);
-    const updatedNote = { ...targetNote, important: !targetNote.important };
+    const updatedNote = {
+      ...targetNote,
+      user: targetNote.user.id, // use `user.id` if it's an object; fallback to raw value
+      important: !targetNote.important,
+    };
+    console.log("Updated Note:", updatedNote);
 
-    noteService
-      .update(updatedNote.id, updatedNote)
-      .then((returnedNote) => {
-        setNotes(
-          notes.map((note) => (note.id === noteId ? returnedNote : note))
-        );
-      })
-      .catch((err) => {
-        setErrorMsg(
-          `Fail: The note "${updatedNote.content}" is not found in the database. \n${err}`
-        );
-        setTimeout(() => {
-          setErrorMsg(null);
-        }, 5000);
-        setNotes(
-          notes.filter((note) => {
-            return note.id !== noteId;
-          })
-        );
-      });
+    try {
+      const returnedNote = await noteService.update(
+        updatedNote.id,
+        updatedNote
+      );
+      setNotes(notes.map((note) => (note.id === noteId ? returnedNote : note)));
+    } catch (error) {
+      console.log("HandleMakeImportant: update error");
+      setErrorMsg(
+        `Fail: The note "${updatedNote.content}" is not found in the database. \n${error}`
+      );
+      setTimeout(() => {
+        setErrorMsg(null);
+      }, 5000);
+      setNotes(
+        notes.filter((note) => {
+          return note.id !== noteId;
+        })
+      );
+    }
   };
 
   const handleShowAllToggle = () => {

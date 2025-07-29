@@ -21,6 +21,12 @@ app.use("/api/login", loginRouter);
 app.use("/api/notes", notesRouter);
 app.use("/api/users", usersRouter);
 
+if (process.env.NODE_ENV === "test") {
+  logger.info("Running /testing.js middleware");
+  const testingRouter = require("./controllers/testing");
+  app.use("/api/testing", testingRouter);
+}
+
 // Catch the rest of the endpoints
 app.use(middleware.unknownEndpoint);
 
