@@ -1,30 +1,15 @@
-import { useState } from "react";
-import { createStore } from "redux";
+import NewNote from "./components/NewNote";
+import Notes from "./components/Notes";
+import { createNote, toggleImportanceOf } from "./reducers/noteReducer";
+import { useSelector, useDispatch } from "react-redux";
 
-function App() {
-  const [count, setCount] = useState(0);
-
-  const counterReducer = (state = 0, action) => {
-    switch (action.type) {
-      case "INCREMENT":
-        return state + 1;
-      case "DECREMENT":
-        return state - 1;
-      case "ZERO":
-        return 0;
-      default: // if none of the above matches, code comes here
-        return state;
-    }
-  };
-
-  const store = createStore(counterReducer);
-
-  // gets called after every dispatch
-  store.subscribe(() => {
-    const storeNow = store.getState();
-    console.log(storeNow);
-  });
-  return <div></div>;
-}
+const App = () => {
+  return (
+    <div>
+      <NewNote />
+      <Notes />
+    </div>
+  );
+};
 
 export default App;
