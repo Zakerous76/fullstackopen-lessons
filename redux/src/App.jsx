@@ -19,7 +19,12 @@ function App() {
 
   const store = createStore(counterReducer);
 
-  return <></>;
+  // gets called after every dispatch
+  store.subscribe(() => {
+    const storeNow = store.getState();
+    console.log(storeNow);
+  });
+  return <div></div>;
 }
 
 export default App;
