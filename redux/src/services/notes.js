@@ -7,4 +7,23 @@ const getAll = async () => {
   return response.data;
 };
 
-export default { getAll };
+const createNew = async (content) => {
+  const object = { content, important: false };
+  const response = await axios.post(baseUrl, object);
+  return response.data;
+};
+
+const toggleImportanceOf = async (note) => {
+  const newNote = {
+    ...note,
+    important: !note.important,
+  };
+  const result = await axios.put(`${baseUrl}/${newNote.id}`, newNote);
+  return result.data;
+};
+
+export default {
+  getAll,
+  createNew,
+  toggleImportanceOf,
+};
