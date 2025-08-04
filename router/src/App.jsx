@@ -10,21 +10,24 @@ import {
   useMatch,
 } from "react-router-dom";
 
-import { Table } from "react-bootstrap";
+import { Table, Form, Button, Alert, Navbar, Nav } from "react-bootstrap";
 
 const Notes = ({ notes }) => {
   return (
     <div>
       <h2>Notes</h2>
-      <Table></Table>
-
-      <ul>
-        {notes.map((note) => (
-          <li key={note.id}>
-            <Link to={`/notes/${note.id}`}>{note.content}</Link>
-          </li>
-        ))}
-      </ul>
+      <Table striped>
+        <tbody>
+          {notes.map((note) => (
+            <tr key={note.id}>
+              <td>
+                <Link to={`/notes/${note.id}`}>{note.content}</Link>
+              </td>
+              <td>{note.user}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
     </div>
   );
 };
@@ -65,22 +68,28 @@ const Login = (props) => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    props.onLogin("mluukai");
+    props.onLogin(event.target[0].value);
     navigate("/");
   };
 
   return (
     <div>
       <h2>Login</h2>
-      <form onSubmit={onSubmit}>
-        <div>
-          username: <input type="text" />
-        </div>
-        <div>
-          password: <input type="password" />
-        </div>
-        <button type="submit">login</button>
-      </form>
+      <Form onSubmit={onSubmit}>
+        <Form.Group>
+          <Form.Label>Username:</Form.Label>
+          <Form.Control type="text" name="username" />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Password:</Form.Label>
+          <Form.Control type="text" name="password" />
+        </Form.Group>
+
+        <Button variant="primary" type="submit">
+          login
+        </Button>
+      </Form>
     </div>
   );
 };
@@ -124,34 +133,52 @@ const App = () => {
     ? notes.find((note) => note.id === Number(match.params.id))
     : null;
 
-  console.log(note);
-
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState(null);
+
   const login = (user) => {
     setUser(user);
+    setMessage(`welcome ${user}`);
+    setTimeout(() => {
+      setMessage(null);
+    }, 10000);
   };
 
   const padding = { padding: 5 };
   return (
     <div className="container">
-      <div>
-        <Link style={padding} to="/">
-          Home
-        </Link>
-        <Link style={padding} to="/notes">
-          Notes
-        </Link>
-        <Link style={padding} to="/users">
-          Users
-        </Link>
-        {user ? (
-          <em>{user} logged in</em>
-        ) : (
-          <Link style={padding} to="/login">
-            Login
-          </Link>
-        )}
-      </div>
+      {message && <Alert variant="success">{message}</Alert>}
+      <Navbar collapseOnSelect expand="lg" variant="dark" bg="dark">
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link href="#" as="span">
+              <Link style={padding} to="/">
+                home
+              </Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              <Link style={padding} to="/notes">
+                notes
+              </Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              <Link style={padding} to="/users">
+                users
+              </Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              {user ? (
+                <em style={padding}>{user} logged in</em>
+              ) : (
+                <Link style={padding} to="/login">
+                  login
+                </Link>
+              )}
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
       <Routes>
         <Route path="/notes/:id" element={<Note note={note} />}></Route>
         <Route path="/notes" element={<Notes notes={notes} />}></Route>
