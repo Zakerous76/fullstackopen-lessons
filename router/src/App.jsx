@@ -10,10 +10,14 @@ import {
   useMatch,
 } from "react-router-dom";
 
+import { Table } from "react-bootstrap";
+
 const Notes = ({ notes }) => {
   return (
     <div>
       <h2>Notes</h2>
+      <Table></Table>
+
       <ul>
         {notes.map((note) => (
           <li key={note.id}>
@@ -129,7 +133,7 @@ const App = () => {
 
   const padding = { padding: 5 };
   return (
-    <div>
+    <div className="container">
       <div>
         <Link style={padding} to="/">
           Home
