@@ -4,7 +4,6 @@ import {
   Routes,
   Route,
   Link,
-  useParams,
   useNavigate,
   Navigate,
   useMatch,
@@ -126,7 +125,7 @@ const Note = ({ note }) => {
 };
 
 const App = () => {
-  const [notes, setNotes] = useState([
+  const [notes, _] = useState([
     {
       id: 1,
       content: "HTML is easy",
