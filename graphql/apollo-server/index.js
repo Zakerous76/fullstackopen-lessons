@@ -48,10 +48,7 @@ type Query {
   personCount: Int!
   allPersons(phone: YesNo): [Person!]!
   findPerson(name: String!): Person
-  editNumber(
-    name: String!
-    phone: String!
-  ):Person
+
 }
 
 type Mutation{
@@ -61,6 +58,10 @@ type Mutation{
     street: String!
     city: String!  
   ): Person
+  editNumber(
+    name: String!
+    phone: String!
+  ):Person
 }
 `
 
@@ -68,7 +69,6 @@ const resolvers = {
   Query: {
     personCount: () => persons.length,
     allPersons: (root, args) => {
-      console.log("args.phone: ", args.phone)
       if (!args.phone) {
         return persons
       }
