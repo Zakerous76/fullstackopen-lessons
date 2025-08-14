@@ -1,3 +1,4 @@
 {
-  "workbench.colorTheme": "green theme"
+  "workbench.colorTheme": "green theme",
+  "postman.settings.dotenv-detection-notification-visibility": false
 }
