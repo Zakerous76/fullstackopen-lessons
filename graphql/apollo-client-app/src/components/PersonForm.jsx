@@ -17,11 +17,11 @@ const PersonForm = ({ setError }) => {
         setError(null)
       }, 5000)
     },
-    update: (cache, response) => {
-      cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
-        return { allPersons: allPersons.concat(response.data.addPerson) }
-      })
-    },
+    // update: (cache, response) => {
+    //   cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+    //     return { allPersons: allPersons.concat(response.data.addPerson) }
+    //   })
+    // },
   })
 
   const submit = (event) => {

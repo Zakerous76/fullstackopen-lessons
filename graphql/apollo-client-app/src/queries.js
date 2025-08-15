@@ -16,8 +16,8 @@ export const ALL_PERSONS = gql`
     allPersons {
       ...PersonDetails
     }
-    ${PERSON_DETAILS}
   }
+  ${PERSON_DETAILS}
 `
 
 export const FIND_PERSON = gql`
@@ -25,8 +25,8 @@ export const FIND_PERSON = gql`
     findPerson(name: $nameToSearch) {
       ...PersonDetails
     }
-    ${PERSON_DETAILS}
   }
+  ${PERSON_DETAILS}
 `
 
 export const CREATE_PERSON = gql`
@@ -39,8 +39,8 @@ export const CREATE_PERSON = gql`
     addPerson(name: $name, street: $street, city: $city, phone: $phone) {
       ...PersonDetails
     }
-    ${PERSON_DETAILS}
   }
+  ${PERSON_DETAILS}
 `
 
 export const EDIT_NUMBER = gql`
@@ -48,9 +48,8 @@ export const EDIT_NUMBER = gql`
     editNumber(name: $name, phone: $phone) {
       ...PersonDetails
     }
-    ${PERSON_DETAILS}
-    }
   }
+  ${PERSON_DETAILS}
 `
 
 export const LOGIN = gql`
@@ -59,4 +58,13 @@ export const LOGIN = gql`
       value
     }
   }
+`
+
+export const PERSON_ADDED = gql`
+  subscription {
+    personAdded {
+      ...PersonDetails
+    }
+  }
+  ${PERSON_DETAILS}
 `
