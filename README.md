@@ -1,7 +1,3 @@
-Sure! Here's a concise and clean **README** you can use for your repo:
-
----
-
 # Fullstackopen Practice Repository
 
 This repository is dedicated to practicing and saving progress from the **[Fullstackopen course](https://fullstackopen-lessons.onrender.com/)**. It covers both frontend and backend development concepts using modern technologies.
