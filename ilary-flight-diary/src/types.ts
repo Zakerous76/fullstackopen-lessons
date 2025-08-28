@@ -1,3 +1,4 @@
+import z from "zod"
 export enum Weather {
   Sunny = "sunny",
   Rainy = "rainy",
@@ -16,8 +17,15 @@ export interface DiaryEntry {
   date: string
   weather: Weather
   visibility: Visibility
-  comment?: string
+  comment?: string | undefined
 }
+
+export const newEntrySchema = z.object({
+  weather: z.enum(Weather),
+  visibility: z.enum(Visibility),
+  date: z.string().date(),
+  comment: z.string().optional(),
+})
 
 export type NonSensitiveDiaryEntry = Omit<DiaryEntry, "comment">
 
